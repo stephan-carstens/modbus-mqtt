@@ -1,0 +1,17 @@
+name: "Sungrow Inverter Addon"
+version: "0.1.0"
+slug: "sungrow_inverter"
+description: ""
+init: false
+startup: application    # check
+boot: auto
+
+arch:
+  - aarch64
+  - amd64
+  - armhf
+  - armv7
+  - i386
+
+options:
+  # 
