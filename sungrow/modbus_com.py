@@ -63,8 +63,8 @@ class ModbusComm:
 if __name__ == "__main__":
     # Test Decoding
     # 0x0102 -> 258
-    print(SungrowComm._decode_u16([0x01, 0x02]))
-    print(convert_from_registers([0x0102], ))
+    print(ModbusComm._decode_u16([0x01, 0x02]))
+    # print(convert_from_registers([0x0102], ))
     # 0x01020304 -> 16909060
-    print(SungrowComm._decode_u32([0x03, 0x04, 0x01, 0x02]))
+    print(ModbusComm._decode_u32([0x03, 0x04, 0x01, 0x02]))
     # print(_decode_utf_8())

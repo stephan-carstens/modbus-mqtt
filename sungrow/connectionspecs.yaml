@@ -1,0 +1,13 @@
+# Connectionspecs template:
+#   connection_type: "RTU"
+#   baud: 9600
+#   data_bits: 8
+#   parity_bits: false
+#   stop_bits: 1
+
+SunGrow Inverter:
+  connection_type: "RTU"
+  baud: 9600
+  data_bits: 8
+  parity_bits: false
+  stop_bits: 1
