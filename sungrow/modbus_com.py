@@ -1,24 +1,15 @@
 from pymodbus.client import ModbusSerialClient
 import struct
 
+from server import Server
+
 DEBUG = True
 def debug(content):
     if DEBUG: print(content)
 
-class SungrowComm:
-    output_types = ["Two Phase", "3P4L", "3P3L"]
-
-    register_map = {
-        "Serial Number":        {"addr": 4990, "dtype": "UTF-8", "multiplier": 1, "unit": ""},
-        "Device Type Code":     {"addr": 5000, "dtype": "U16", "multiplier": 1, "unit": ""},
-        "Nominal Active Power": {"addr": 5001, "dtype": "U16", "multiplier": 0.1, "unit": "kW"},
-        "Output Type":          {"addr": 5002, "dtype": "U16", "multiplier": 1, "unit": ""},
-        "Daily Power Yields":   {"addr": 5003, "dtype": "U16", "multiplier": 0.1, "unit": "kWh"},
-        # "Total Power Yields":          {"addr": 5004, "dtype": "U16", "multiplier": 0.1, "unit": "kWh"},
-        # TODO
-    }
-    
-    def __init__(self, port):
+class ModbusComm:
+    def __init__(self, server:Server, port):
+        self.server = None
         self.client = ModbusSerialClient(method='rtu', port=port, baudrate=9600, timeout=1)
 
     def connect(self):
@@ -50,6 +41,8 @@ class SungrowComm:
         packed = struct.pack('')
 
     def read_register(self, register_name: str):
+        """ Read an individual register using pymodbus """
+
         register = self.register_map[register_name]
 
         address = register["addr"]
@@ -63,6 +56,9 @@ class SungrowComm:
             raise Exception(f"Error reading register {register_name}")
 
         return _decoded(result)*multiplier
+
+    def write_register(self, register_name:str):
+        pass
 
 if __name__ == "__main__":
     # Test Decoding
