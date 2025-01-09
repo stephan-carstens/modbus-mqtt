@@ -83,21 +83,12 @@ class ModbusRtuClient:
 
 
 if __name__ == "__main__":
+    # Test Decoding
     mock_u16_register = [258, ]                     # 0x0102 -> 258
     mock_u32_register = [772, 258]                  # 0x01020304 -> 16909060
     mock_utf8_register = [16706, 17220, 17734, 18248, 18762]
-    # BPD
-    # decoder = BinaryPayloadDecoder.fromRegisters(registers=mock_u16_register,
-    #                                                 byteorder=Endian.BIG,
-    #                                                 wordorder=Endian.BIG)
-
-    # print(decoder.decode_32bit_float())
-
     
-    # Test Decoding
     print(ModbusRtuClient._decode_u16(mock_u16_register))
-    # print(convert_from_registers([0x0102], ))
     print(ModbusRtuClient._decode_u32(mock_u32_register))
-    # print(_decode_utf_8())
     print(ModbusRtuClient._decode_utf8(mock_utf8_register))
 
