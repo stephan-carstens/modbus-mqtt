@@ -9,7 +9,11 @@ class Server:
         self.nickname= nickname
         self.serialnum = serialnum
         self.connected_client = connected_client
-        self.sensors: list[Sensor] = []
+        self.registers: list = []
+        # self.batches TODO
+
+    def batchify_registers(self):
+        pass
 
     def from_config(server_cfg:dict, clients:list[Client]) -> Server:
         # assume valid configLoader object
@@ -19,4 +23,6 @@ class Server:
             raise ValueError(f"Client {server_cfg['connected_client']} from server {server_cfg['nickname']} config not defined in client list")
 
         return Server(server_cfg["name"], server_cfg["nickname"], server_cfg["serialnum"], connected_client=clients[idx])
+
+
 

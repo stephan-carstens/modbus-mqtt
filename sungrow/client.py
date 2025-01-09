@@ -44,13 +44,13 @@ class ModbusRtuClient:
     def _decode_utf8(content):
         packed = struct.pack('')
 
-    def read_register(self, server:Server, sensor:Sensor):
+    def read_register(self, server:Server, register):
         """ Read an individual register using pymodbus """
 
-        register = sensor.name
-        address = sensor.addr
-        dtype = sensor.dtype
-        multiplier = sensor.multiplier
+        register = register["name"]
+        address = register["addr"]
+        dtype =  register["dtype"]
+        multiplier = register["multiplier"]
         unit = register["unit"]
 
         result = self.client.read_holding_registers(address-1)  # slave id TODO
