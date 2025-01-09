@@ -1,10 +1,10 @@
 from config_loader import ConfigLoader
-from client import ModbusRtuClient as Client
-from Sensor import Sensor
+# from client import ModbusRtuClient as Client
+# from Sensor import Sensor
 
 class Server:
     
-    def __init__(self, name:str, nickname:str, serialnum:str, connected_client:Client):
+    def __init__(self, name:str, nickname:str, serialnum:str, connected_client):
         self.name = name
         self.nickname= nickname
         self.serialnum = serialnum
@@ -15,7 +15,7 @@ class Server:
     def batchify_registers(self):
         pass
 
-    def from_config(server_cfg:dict, clients:list[Client]) -> Server:
+    def from_config(server_cfg:dict, clients:list):
         # assume valid configLoader object
         try:
             idx = [str(client) for c in clients].index(server_cfg["connected_client"])  # TODO ugly
