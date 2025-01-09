@@ -1,26 +1,13 @@
 from config_loader import ConfigLoader
 from client import ModbusRtuClient as Client
+from Sensor import Sensor
 
 class Server:
-    class Sensor:
-        def __init__(self, name, addr, dtype, multiplier, unit):
-            self.name = name
-            self.addr = addr
-            self.dtype = dtype
-            self.multiplier = multiplier
-            self.unit = unit
-
-        @property
-        def value():
-            pass
-
-        def publish():
-            pass
     
-    def __init__(self, name, nickname, serialnum, connected_client):
+    def __init__(self, name:str, nickname:str, serialnum:str, connected_client:Client):
         self.name = name
-        self.nickname: str = nickname
-        self.serialnum: str = serialnum
+        self.nickname= nickname
+        self.serialnum = serialnum
         self.connected_client = connected_client
         self.sensors: list[Sensor] = []
 

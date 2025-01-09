@@ -30,8 +30,8 @@ options:
     SunGrow Inverter:
       connection_method: "RTU"
       baudrate: 9600
-      data_bits: 8
-      parity_bits: false
-      stop_bits: 1
+      bytesize: 8
+      parity: false
+      stopbits: 1
 
 
