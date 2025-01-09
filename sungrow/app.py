@@ -1,12 +1,12 @@
-""" TODO pseudocoe for the main application """
-
-from client import ModbusRtuClient as Client
-from config_loader import ConfigLoader
+""" TODO pseudocode for the main application """
 from time import sleep
+
+from config_loader import ConfigLoader
+from client import ModbusRtuClient as Client
 from server import Server
 
 # Read configuration
-servers_cfgs, clients_cfgs, connection_specs = ConfigLoader.load(json_rel_path="data/options.json")
+servers_cfgs, clients_cfgs, connection_specs = ConfigLoader.load()
 
 # Instantiate clients (modbus adapters)
 clients = [Client.from_config(client_cfg, connection_specs) for client_cfg in clients_cfgs]

@@ -5,7 +5,7 @@ import os
 class ConfigLoader:
    
     @staticmethod
-    def load(json_rel_path) -> tuple[dict, dict]:
+    def load(json_rel_path="data/options.json") -> tuple[dict, dict]:
         """ Load server, client configurations and connection specs as dicts from options json. """
 
         if os.path.exists(json_rel_path):
@@ -23,10 +23,17 @@ class ConfigLoader:
         pass
 
 # Option schema example
-# {'options': {'clients': [{'name': 'usb_to_modbus',
+# {'clients': [{'name': 'usb_to_modbus',
 #     'nickname': 'Client1',
-#     'connectionspecs': 'SunGrow Inverter'}],
+#     'connection_specs': 'SunGrow Inverter',
+#     'port': 'dev/tty1'}],
 #   'servers': [{'name': 'SunGrow Inverter 1',
-#     'serialnum': '12345678',
 #     'nickname': 'SG1',
-#     'server_type': 'SunGrow Inverter'}]}}
+#     'serialnum': '12345678',
+#     'server_type': 'SunGrow Inverter',
+#     'connected_client': 'Client1'}],
+#   'connection_specs': {'SunGrow Inverter': {'connection_method': 'RTU',
+#     'baudrate': 9600,
+#     'bytesize': 8,
+#     'parity': False,
+#     'stopbits': 1}}}

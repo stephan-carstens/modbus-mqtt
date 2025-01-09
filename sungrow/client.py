@@ -68,7 +68,7 @@ class ModbusRtuClient:
         conection_cfg = connection_specs[client_cfg["connection_specs"]]
         
         return ModbusRtuClient(client_cf["name"], client_cfg["nickname"], client_cfg["port"], 
-                            connection_cfg["baudrate"], connection_cfg["baudrate"], 
+                            connection_cfg["baudrate"], connection_cfg["bytesize"], 
                             connection_cfg["parity"], connection_cfg["stopbits"])
 
     def __str__(self):
