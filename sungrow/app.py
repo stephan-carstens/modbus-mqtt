@@ -8,11 +8,12 @@ from time import sleep
 config = ConfigLoader.load()
 
 # Instantiate clients (modbus adapters)
-comm = ModbusComm(port=config.port)     # support 1 client 0.1.0
+comm = ModbusComm(port=config.clients[0].port)     # support 1 client 0.1.0
 comm.connect()
 
 # Instantiate servers
-servers = []
+servers = [Server.from_config() for server_cfg in config.servers]
+
 
 # every read_interval seconds, read the registers and publish to mqtt
 while True:

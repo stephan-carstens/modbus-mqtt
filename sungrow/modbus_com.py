@@ -8,8 +8,7 @@ def debug(content):
     if DEBUG: print(content)
 
 class ModbusComm:
-    def __init__(self, server:Server, port):
-        self.server = None
+    def __init__(self, port):
         self.client = ModbusSerialClient(method='rtu', port=port, baudrate=9600, timeout=1)
 
     def connect(self):
@@ -40,7 +39,7 @@ class ModbusComm:
     def _decode_utf8(content):
         packed = struct.pack('')
 
-    def read_register(self, register_name: str):
+    def read_register(self, server, register_name: str):
         """ Read an individual register using pymodbus """
 
         register = self.register_map[register_name]

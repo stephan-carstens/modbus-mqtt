@@ -4,6 +4,5 @@ class Sensor:
         self.addr = None
     def value():
         pass
-
     def publish():
         pass

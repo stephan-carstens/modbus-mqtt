@@ -17,11 +17,19 @@ options:
   clients:
     - name: "usb_to_modbus"
       nickname: "Client1"
-      connectionspecs: "SunGrow Inverter"      # selects 8N1 and 9600 baud
+      connection_specs: "SunGrow Inverter"      # selects 8N1 and 9600 baud
   servers: 
     - name: "SunGrow Inverter 1"
       serialnum: "12345678"
       nickname: "SG1"
       server_type: "SunGrow Inverter"
       # read all registers for now. invalid registers are Uint/Int_Max
+  connection_specs:
+    SunGrow Inverter:
+      connection_method: "RTU"
+      baud: 9600
+      data_bits: 8
+      parity_bits: false
+      stop_bits: 1
+
 
