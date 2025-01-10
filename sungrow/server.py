@@ -1,6 +1,7 @@
 from sungrow.config_loader import ConfigLoader
+import abc
 
-class Server:
+class Server(metaclass=abc.ABCMeta):
 
     
     def __init__(self, name:str, nickname:str, serialnum:str, connected_client):
@@ -31,5 +32,6 @@ class Server:
 
         return Server(server_cfg["name"], server_cfg["nickname"], server_cfg["serialnum"], connected_client=clients[idx])
 
-
-
+    @abc.abstractmethod
+    def _decoded(content):
+        raise NotImplementedError("Server-specific decoding must be implemented.")

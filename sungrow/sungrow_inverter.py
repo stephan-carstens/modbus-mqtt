@@ -1,4 +1,6 @@
-from server import Server
+from sungrow.server import Server
+from pymodbus.client import ModbusSerialClient
+import struct
 
 class SungrowInverter(Server):
     """
@@ -9,7 +11,9 @@ class SungrowInverter(Server):
         SG80KTL-20
     """
     # TODO some should be class attributes
-    self.model = "unknown"
+    def __init__(self):
+        super.__init__()
+        self.model = "unknown"
     
     manufacturer = "Sungrow"
     output_types = ["Two Phase", "3P4L", "3P3L"] # register 3x  5002
@@ -188,4 +192,57 @@ class SungrowInverter(Server):
     }
 
     # Appendix 7, 8, 9?
+
+
+    def _decoded(content, dtype):
+        #TODO see convert from registers
+        if dtype == "UTF-8": return _decode_utf8(content)
+        elif dtype == "U16": return _decode_u16(content)
+        elif dtype == "U32": return _decode_u32(content)
+        elif dtype == "S16": return _decode_s16(content)
+        elif dtype == "S32": return _decode_s32(content)
+        else: raise NotImplementedError(f"Data type {dtype} decoding not implemented")
+
+    def _decode_u16(registers):
+        """ Unsigned 16-bit big-endian to int """
+        return registers[0]
     
+    def _decode_s16(registers):
+        """ Signed 16-bit big-endian to int """
+        sign = 0xFFFF if registers[0] & 0x1000 else 0
+        packed = struct.pack('>HH', sign, registers[0])
+        return struct.unpack('>i', packed)[0]
+
+    def _decode_u32(registers):
+        """ Unsigned 32-bit mixed-endian word"""
+        packed = struct.pack('>HH', registers[1], registers[0])
+        return struct.unpack('>I', packed)[0]
+    
+    def _decode_s32(registers):
+        """ Signed 32-bit mixed-endian word"""
+        packed = struct.pack('>HH', registers[1], registers[0])
+        return struct.unpack('>i', packed)[0]
+
+    def _decode_utf8(registers):
+        return ModbusSerialClient.convert_from_registers(registers=registers, data_type=ModbusSerialClient.DATATYPE.STRING)
+    
+
+
+if __name__ == "__main__":
+    # # Test Decoding
+    mock_u16_register = [258, ]                     # 0x0102 -> 258
+    mock_u32_register = [772, 258]                  # 0x01020304 -> 16909060
+    mock_utf8_register = [16706, 17220, 17734, 18248, 18762]
+    mock_s16_register = [32768-1]                     #2*15-1 == -32769
+    mock_s16_register2 = [2**16-1]                     #2*16-1 == -1
+    mock_s32_register = [65535, 65535]                     #2*32-1 == -1
+    mock_s32_register2 = [30587, 65535]                     # 0xFFFF777B -> -34949 
+    
+    print(SungrowInverter._decode_u16(mock_u16_register))
+    print(SungrowInverter._decode_u32(mock_u32_register))
+    print(SungrowInverter._decode_utf8(mock_utf8_register))
+    print(SungrowInverter._decode_s16(mock_s16_register))
+    print(SungrowInverter._decode_s16(mock_s16_register2))
+    print(SungrowInverter._decode_s32(mock_s32_register))
+    print(SungrowInverter._decode_s32(mock_s32_register2))
+
