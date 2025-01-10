@@ -43,8 +43,11 @@ try:
         # - verify that all specified serial nums are connected
         serialnum = server.connected_client.read_register(server, server.registers["Serial Number"])
         server.verify_serialnum(serialnum)                                                        # what is the point of isCOnnected if an error is raised for all cases where it woulf be false as in UXR
-        # - get limits for settable params
-        # TODO
+        # get server model
+        modelcode = server.connected_client.read_register(server, server.registers["Device Type Code"])
+        sever.model = Server.device_info[modelcode]
+        # TODO find valid registers
+        # - get limits for settable params TODO
 
     # Setup MQTT Client
     mqtt_client = MqttClient(mqtt_cfg)
@@ -58,9 +61,9 @@ try:
     # every read_interval seconds, read the registers and publish to mqtt
     while True:
         for server in servers:
-            for register in server.registers:
+            for register, details in server.registers.items():
                 client = server.connected_client
-                value = client.read_register(server, register)
+                value = client.read_register(server, register, details)
                 mqtt_client.publish(register, value)
 
         #publish availability

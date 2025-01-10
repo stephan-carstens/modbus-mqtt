@@ -1,6 +1,7 @@
-from config_loader import ConfigLoader
+from sungrow.config_loader import ConfigLoader
 
 class Server:
+
     
     def __init__(self, name:str, nickname:str, serialnum:str, connected_client):
         self.name = name
@@ -8,6 +9,8 @@ class Server:
         self.serialnum = serialnum
         self.connected_client = connected_client
         self.registers: list = []
+        self.manufacturer:str | None = None
+        self.model:str | None = None
         # self.isConnected: bool = False
         # self.batches TODO
 
