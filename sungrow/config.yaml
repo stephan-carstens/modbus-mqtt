@@ -34,6 +34,7 @@ options:
       serialnum: "12345678"
       server_type: "SunGrow Inverter"
       connected_client: "Client1"
+      device_addr: 999
       # read all registers for now. invalid registers are Uint/Int_Max
   connection_specs:
     SunGrow Inverter:
@@ -62,6 +63,7 @@ schema:
       serialnum: str
       server_type: str
       connected_client: str
+      device_addr: int
   connection_specs:
     SunGrow Inverter:
       - connection_method: str

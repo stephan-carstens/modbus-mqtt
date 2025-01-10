@@ -2,9 +2,7 @@ from sungrow.config_loader import ConfigLoader
 import abc
 
 class Server(metaclass=abc.ABCMeta):
-
-    
-    def __init__(self, name:str, nickname:str, serialnum:str, connected_client):
+    def __init__(self, name:str, nickname:str, serialnum:str, device_addr:int, connected_client):
         self.name = name
         self.nickname= nickname
         self.serialnum = serialnum
@@ -12,6 +10,7 @@ class Server(metaclass=abc.ABCMeta):
         self.registers: list = []
         self.manufacturer:str | None = None
         self.model:str | None = None
+        self.device_addr:int| None = None
         # self.isConnected: bool = False
         # self.batches TODO
 
@@ -30,8 +29,14 @@ class Server(metaclass=abc.ABCMeta):
         except:
             raise ValueError(f"Client {server_cfg['connected_client']} from server {server_cfg['nickname']} config not defined in client list")
 
-        return Server(server_cfg["name"], server_cfg["nickname"], server_cfg["serialnum"], connected_client=clients[idx])
+        return Server(server_cfg["name"], server_cfg["nickname"], server_cfg["serialnum"], server_cfg['device_addr'], connected_client=clients[idx])
 
     @abc.abstractmethod
     def _decoded(content):
-        raise NotImplementedError("Server-specific decoding must be implemented.")
+        "Server-specific decoding must be implemented."
+        pass
+
+    @abc.abstractmethod
+    def _encoded(content):
+        "Server-specific encoding must be implemented."
+        pass

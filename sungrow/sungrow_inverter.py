@@ -97,10 +97,95 @@ class SungrowInverter(Server):
         'Grid Frequency (Increased Accuracy)': {'addr': 5148, 'count': 1, 'dtype': 'U16', 'multiplier': 0.01, 'unit': 'Hz'},
         'PID Work State': {'addr': 5150, 'count': 1, 'dtype': 'U16', 'multiplier': 1, 'unit': ''},
         'PID Alarm Code': {'addr': 5151, 'count': 1, 'dtype': 'U16', 'multiplier': 1, 'unit': ''}
+
+        #Combiner board information TODO p12
     }
 
-    # Params 4x register (write)
-    settable_params = {}
+    # Params 4x register (write) p.13
+    write_registers = {
+        'System clock: Year': {'addr': 5000, 'dtype': 'U16', 'unit': ''},
+        'System clock: Month': {'addr': 5001, 'dtype': 'U16', 'unit': ''},
+        'System clock: Day': {'addr': 5002, 'dtype': 'U16', 'unit': ''},
+        'System clock: Hour': {'addr': 5003, 'dtype': 'U16', 'unit': ''},
+        'System clock: Minute': {'addr': 5004, 'dtype': 'U16', 'unit': ''},
+        'System clock: Second': {'addr': 5005, 'dtype': 'U16', 'unit': ''},
+
+        'Start/Stop': {'addr': 5006, 'dtype': 'U16', 'unit': ''},
+
+        # 'Power limitation switch': {'addr': 5007, 'dtype': 'U16', 'unit': ''},
+        # 'Power limitation setting': {'addr': 5008, 'dtype': 'U16', 'unit': '0.1%'},
+
+        # Valid for inverters:
+        # SG5KTL-MT
+        # SG6KTL-MT
+        # SG8KTL-M
+        # SG10KTL-M
+        # SG10KTL-MT
+        # SG12KTL-M
+        # SG15KTL-M
+        # SG17KTL-M
+        # SG20KTL-M
+        # Note: Country set to Europe Area.
+        # 'Export power limitation': {'addr': 5010, 'dtype': 'U16', 'unit': ''},
+        # 'Export power limitation value': {'addr': 5011, 'dtype': 'U16', 'unit': ''},
+        # 'Current transformer output current': {'addr': 5012, 'dtype': 'U16', 'unit': 'A'},
+        # 'Current transformer range': {'addr': 5013, 'dtype': 'U16', 'unit': 'A'},
+        # 'Current transformer': {'addr': 5014, 'dtype': 'U16', 'unit': ''},
+        # 'Export power limitation percentage': {'addr': 5015, 'dtype': 'U16', 'unit': '0.1%'},
+        # 'Installed PV Power': {'addr': 5016, 'dtype': 'U16', 'unit': '0.01KW'},
+
+        # valid requirement checking needed
+        # 'Power factor setting': {'addr': 5019, 'dtype': 'S16', 'unit': '0.001'},
+        # 'Reactive power adjustment mode': {'addr': 5036, 'dtype': 'U16', 'unit': ''},
+        # 'Reactive power percentage setting': {'addr': 5037, 'dtype': 'S16', 'unit': '0.1%'},
+
+        # model specific
+        # '100% Scheduling to Achieve Active Overload': {'addr': 5020, 'dtype': 'U16', 'unit': ''},
+        # 'Night SVG Switch': {'addr': 5035, 'dtype': 'U16', 'unit': ''},
+
+        # 'Power limitation adjustment': {'addr': 5039, 'dtype': 'U16', 'unit': '0.1kW'},
+        # 'Reactive power adjustment': {'addr': 5040, 'dtype': 'S16', 'unit': '0.1kVar'},
+        # 'PID Recovery': {'addr': 5041, 'dtype': 'U16', 'unit': ''},
+        # 'Anti-PID': {'addr': 5042, 'dtype': 'U16', 'unit': ''},
+        # 'Full-Day PID Suppression': {'addr': 5043, 'dtype': 'U16', 'unit': ''},
+        # 'Q(P) curve 1': {'addr': 5048, 'dtype': 'U16', 'unit': ''},
+        # 'Q(U) curve 1': {'addr': 5078, 'dtype': 'U16', 'unit': ''},
+        # 'Q(P) curve 2': {'addr': 5116, 'dtype': 'U16', 'unit': ''},
+        # 'Q(U) curve 2': {'addr': 5135, 'dtype': 'U16', 'unit': ''}
+    }
+
+    write_valid_values = {
+        'Start/Stop': {'Start': 0xCF, 'Stop': 0xCE},
+        'Power limitation switch': {'Enable': 0xAA, 'Disable': 0x55},
+        'Export power limitation': {'Enable': 0xAA, 'Disable': 0x55},
+        'Export power limitation value': {'Rated active power': 0},                         # remove from register map?
+        # 'Current transformer output current': {'Min': 1, 'Max': 100},
+        # 'Current transformer range': {'Min': 1, 'Max': 10000},
+        'Current transformer type': {'Internal': 0, 'External': 1},
+        # 'Export power limitation percentage': {'Min': 0, 'Max': 1000, 'Unit': '0.1%'},
+        # 'Installed PV Power': {'Min': 0, 'Max': 30000, 'Unit': '0.01kW'},
+        # 'Power factor setting': {
+        #     'Range': {'Min': -1000, 'Max': 1000},
+        #     'Unit': '0.001',
+        #     'Notes': '> 0 means leading, < 0 means lagging',
+        # },
+        '100% Scheduling to Achieve Active Overload': {'Enable': 0xAA, 'Disable': 0x55},
+        'Night SVG Switch': {'Enable': 0xAA, 'Disable': 0x55},
+        # 'Reactive power adjustment mode': {
+        #     'OFF': 0x55,
+        #     'Power factor setting valid': 0xA1,
+        #     'Reactive power percentage setting valid': 0xA2,
+        #     'Enable Q(P) curve configuration': 0xA3,
+        #     'Enable Q(U) curve configuration': 0xA4,
+        # },
+        # 'Reactive power percentage setting': {
+        #     'Range': {'Min': -1000, 'Max': 1000},
+        #     'Unit': '0.1%',
+        # },
+        'PID Recovery': {'Enable': 0xAA, 'Disable': 0x55},
+        'Anti-PID': {'Enable': 0xAA, 'Disable': 0x55},
+        'Full-Day PID Suppression': {'Enable': 0xAA, 'Disable': 0x55},
+    }
 
     # Device Work state (Appendix 1) register 5038
     device_work_state = {
@@ -465,6 +550,35 @@ class SungrowInverter(Server):
         return ModbusSerialClient.convert_from_registers(registers=registers, data_type=ModbusSerialClient.DATATYPE.STRING)
     
 
+    def _encoded(value, is_float):
+        if is_float:
+            # Convert the float value to 4 bytes using IEEE 754 format
+            value_bytes = list(struct.pack('>f', value))
+        else:
+            # Convert the integer value to 4 bytes
+            value_bytes = list(value.to_bytes(4, byteorder='big'))
+            
+        return value_bytes
+
+    # def _encoded(content, dtype):
+    #     if dtype == "U16": return _encode_u16(content)
+    #     elif dtype == "S16": return _encode_s16(content)
+    #     else: raise NotImplementedError(f"Data type {dtype} decoding not implemented")
+
+    # def _encode_u16(val):
+    #     """ Unsigned 16-bit big-endian to register """
+    #     if val<0:
+    #         raise ValueError(f"Cannot set register to negative value {val}.")
+    #     return struct.pack('>HH', 0, val)
+
+    # def _encode_s16(val):
+    #     """ Signed 16-bit big-endian to register """
+    #     sign = 0xFFFF if val<0 else 0
+    #     return struct.pack('>hh', sign, val)
+
+        
+    def _validate_write_val(register_name:str, val):
+        raise NotImplementedError()
 
 if __name__ == "__main__":
     # # Test Decoding

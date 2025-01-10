@@ -12,7 +12,7 @@ def debug(content):
     if DEBUG: print(content)
 
 class ModbusRtuClient:
-    def __init__(self, name, nickname, port, baudrate, bytesize=8, parity=False, stopbits=1, timeout=1):
+    def __init__(self, name:str, nickname:str, port:int, baudrate:int, bytesize:int=8, parity:bool=False, stopbits:int=1, timeout:int=1):
         self.name = name
         self.nickname = nickname
         self.client = ModbusSerialClient(   port=port, baudrate=baudrate, 
@@ -21,7 +21,10 @@ class ModbusRtuClient:
 
 
     def read_register(self, server:Server, register_name:str, register_info:dict):
-        """ Read an individual register using pymodbus """
+        """ Read an individual register using pymodbus 
+        
+            Reuires implementation of the abstract method 'Server._decoded()'
+        """
 
         # register = register["name"]
         address = register_info["addr"]
@@ -29,7 +32,8 @@ class ModbusRtuClient:
         multiplier = register_info["multiplier"]
         unit = register_info["unit"]
 
-        result = self.client.read_holding_registers(address-1)  # slave id TODO
+        result = self.client.read_holding_registers(address-1,
+                                                    slave=server.device_addr)
         # result.registers
 
         if result.isError():
@@ -39,8 +43,19 @@ class ModbusRtuClient:
         return _decoded(result.registers)*multiplier
         # TODO multiplier
 
-    def write_register(self, register_name: str):
-        pass
+    def write_register(self, val, is_float:bool, server:Server, register_name: str, register_info:dict):
+        """ Write to an individual register using pymodbus.
+
+            Reuires implementation of the abstract methods 
+            'Server._validate_write_val()' and 'Server._encode()'
+        """
+        # model specific write register validation
+        server._validate_write_val(register_name, val)
+        
+        self.client.write_register(address=register_info["addr"],
+                                    value=server._encoded(value, dtype),
+                                    slave=server.device_addr)
+
 
     def connect(self):
         self.client.connect()
