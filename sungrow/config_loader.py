@@ -1,5 +1,7 @@
 import json
 import os
+import logging
+logger = logging.getLogger(__name__)
 
 
 class ConfigLoader:
@@ -8,6 +10,7 @@ class ConfigLoader:
     def load(json_rel_path="data/options.json") -> tuple[dict, dict]:
         """ Load server, client configurations and connection specs as dicts from options json. """
 
+        logger.info("Attempting to read configuration json")
         if os.path.exists(json_rel_path):
             with open(json_rel_path) as f:
                 data = json.load(f)
@@ -15,8 +18,9 @@ class ConfigLoader:
             raise FileNotFoundError(f"Config options json not found.")
 
         cls.validate(data)
+        logger.info("Successfully read configuration json")
 
-        return data["servers"], data["clients"], data["connection_specs"]
+        return data["servers"], data["clients"], data["connection_specs"], data["mqtt"]
 
     @staticmethod
     def validate(data):

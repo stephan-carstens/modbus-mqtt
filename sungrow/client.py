@@ -2,6 +2,8 @@ from pymodbus.client import ModbusSerialClient
 from pymodbus.payload import BinaryPayloadDecoder
 from pymodbus.constants import Endian
 import struct
+import logging
+logger = logging.getLogger(__name__)
 
 from server import Server
 

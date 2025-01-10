@@ -1,3 +1,5 @@
+from server import Server
+
 class SungrowInverter(Server):
     """
     Sungrow

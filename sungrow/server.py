@@ -1,6 +1,4 @@
 from config_loader import ConfigLoader
-# from client import ModbusRtuClient as Client
-# from Sensor import Sensor
 
 class Server:
     
@@ -10,7 +8,13 @@ class Server:
         self.serialnum = serialnum
         self.connected_client = connected_client
         self.registers: list = []
+        # self.isConnected: bool = False
         # self.batches TODO
+
+    def verify_serialnum(self, serialnum_as_read:str):
+        if self.serialnum is None: raise ConnectionError(f"Failed to read serialnum of {self.nickname}.")
+        elif self.serialnum != serialnum_as_read: raise ValueError(f"Mismatch in configured serialnum {self.serialnum} \
+                                                                        and actual serialnum {serialnum_as_read} for server {self.nickname}.")
 
     def batchify_registers(self):
         pass
