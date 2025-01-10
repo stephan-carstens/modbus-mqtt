@@ -11,9 +11,6 @@ class SungrowInverter(Server):
         SG80KTL-20
     """
     # TODO some should be class attributes
-    def __init__(self):
-        super.__init__()
-        self.model = "unknown"
     
     manufacturer = "Sungrow"
     output_types = ["Two Phase", "3P4L", "3P3L"] # register 3x  5002
@@ -97,8 +94,6 @@ class SungrowInverter(Server):
         'Grid Frequency (Increased Accuracy)': {'addr': 5148, 'count': 1, 'dtype': 'U16', 'multiplier': 0.01, 'unit': 'Hz'},
         'PID Work State': {'addr': 5150, 'count': 1, 'dtype': 'U16', 'multiplier': 1, 'unit': ''},
         'PID Alarm Code': {'addr': 5151, 'count': 1, 'dtype': 'U16', 'multiplier': 1, 'unit': ''}
-
-        #Combiner board information TODO p12
     }
 
     # Params 4x register (write) p.13
@@ -516,6 +511,9 @@ class SungrowInverter(Server):
 
     # Appendix 7, 8, 9?
 
+    def __init__(self):
+        super.__init__()
+        self.model = "unknown"
 
     def _decoded(content, dtype):
         #TODO see convert from registers

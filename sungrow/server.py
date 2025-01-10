@@ -11,7 +11,6 @@ class Server(metaclass=abc.ABCMeta):
         self.manufacturer:str | None = None
         self.model:str | None = None
         self.device_addr:int| None = None
-        # self.isConnected: bool = False
         # self.batches TODO
 
     def verify_serialnum(self, serialnum_as_read:str):
