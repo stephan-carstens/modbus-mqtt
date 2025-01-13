@@ -1,4 +1,4 @@
-from sungrow.config_loader import ConfigLoader
+from .config_loader import ConfigLoader
 import abc
 
 class Server(metaclass=abc.ABCMeta):

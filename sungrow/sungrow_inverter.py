@@ -1,6 +1,8 @@
-from sungrow.server import Server
+from .server import Server
 from pymodbus.client import ModbusSerialClient
 import struct
+
+U16_MAX = 2**16-1
 
 class SungrowInverter(Server):
     """
@@ -548,51 +550,27 @@ class SungrowInverter(Server):
         return ModbusSerialClient.convert_from_registers(registers=registers, data_type=ModbusSerialClient.DATATYPE.STRING)
     
 
-    def _encoded(value, is_float):
-        if is_float:
+    def _encoded(value):
+        """ Convert a float or integer to big-endian register.
+            Supports unsigned 16-bit U16 only.
+        """
+        # TODO: Support float?
+
+        if value > U16_MAX: raise ValueError(f"Cannot write {value=} to U16 register.")
+        elif value < 0:     raise ValueError(f"Cannot write negative {value=} to U16 register.")
+
+        if isinstance(value, float):
             # Convert the float value to 4 bytes using IEEE 754 format
-            value_bytes = list(struct.pack('>f', value))
+            # value_bytes = list(struct.pack('>f', value))
+            raise NotImplemented(f"Writing floats to registers is not yet supported.")
         else:
-            # Convert the integer value to 4 bytes
-            value_bytes = list(value.to_bytes(4, byteorder='big'))
+            value_bytes = list(value.to_bytes(4, byteorder='big', signed=False))
             
         return value_bytes
-
-    # def _encoded(content, dtype):
-    #     if dtype == "U16": return _encode_u16(content)
-    #     elif dtype == "S16": return _encode_s16(content)
-    #     else: raise NotImplementedError(f"Data type {dtype} decoding not implemented")
-
-    # def _encode_u16(val):
-    #     """ Unsigned 16-bit big-endian to register """
-    #     if val<0:
-    #         raise ValueError(f"Cannot set register to negative value {val}.")
-    #     return struct.pack('>HH', 0, val)
-
-    # def _encode_s16(val):
-    #     """ Signed 16-bit big-endian to register """
-    #     sign = 0xFFFF if val<0 else 0
-    #     return struct.pack('>hh', sign, val)
-
-        
+   
     def _validate_write_val(register_name:str, val):
         raise NotImplementedError()
 
 if __name__ == "__main__":
-    # # Test Decoding
-    mock_u16_register = [258, ]                     # 0x0102 -> 258
-    mock_u32_register = [772, 258]                  # 0x01020304 -> 16909060
-    mock_utf8_register = [16706, 17220, 17734, 18248, 18762]
-    mock_s16_register = [32768-1]                     #2*15-1 == -32769
-    mock_s16_register2 = [2**16-1]                     #2*16-1 == -1
-    mock_s32_register = [65535, 65535]                     #2*32-1 == -1
-    mock_s32_register2 = [30587, 65535]                     # 0xFFFF777B -> -34949 
-    
-    print(SungrowInverter._decode_u16(mock_u16_register))
-    print(SungrowInverter._decode_u32(mock_u32_register))
-    print(SungrowInverter._decode_utf8(mock_utf8_register))
-    print(SungrowInverter._decode_s16(mock_s16_register))
-    print(SungrowInverter._decode_s16(mock_s16_register2))
-    print(SungrowInverter._decode_s32(mock_s32_register))
-    print(SungrowInverter._decode_s32(mock_s32_register2))
-
+    print(SungrowInverter._encoded(2**16-1, False))
+    print(SungrowInverter._encoded(-1, False))
