@@ -15,7 +15,6 @@ class SungrowInverter(Server):
     # TODO some should be class attributes
     
     manufacturer = "Sungrow"
-    output_types = ["Two Phase", "3P4L", "3P3L"] # register 3x  5002
 
     # ROM 3x registers
     # TODO Combiner Board information p12 - need to check availability before reading?
@@ -511,6 +510,8 @@ class SungrowInverter(Server):
         'SG20RT': {'type_code': '0x2437', 'mppt': 2, 'string_per_mppt': 2}
     }
 
+    output_types = ["Two Phase", "3P4L", "3P3L"] # register 3x  5002
+
     # Appendix 7, 8, 9?
 
     def __init__(self):
@@ -552,19 +553,18 @@ class SungrowInverter(Server):
 
     def _encoded(value):
         """ Convert a float or integer to big-endian register.
-            Supports unsigned 16-bit U16 only.
+            Supports U16 only.
         """
-        # TODO: Support float?
 
         if value > U16_MAX: raise ValueError(f"Cannot write {value=} to U16 register.")
         elif value < 0:     raise ValueError(f"Cannot write negative {value=} to U16 register.")
 
         if isinstance(value, float):
-            # Convert the float value to 4 bytes using IEEE 754 format
+            # Convert the float value to 4 bytes using IEEE 754 format TODO
             # value_bytes = list(struct.pack('>f', value))
             raise NotImplemented(f"Writing floats to registers is not yet supported.")
-        else:
-            value_bytes = list(value.to_bytes(4, byteorder='big', signed=False))
+
+        value_bytes = list(value.to_bytes(4, byteorder='big', signed=False))
             
         return value_bytes
    

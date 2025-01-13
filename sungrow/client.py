@@ -21,7 +21,7 @@ class ModbusRtuClient:
 
 
     def read_registers(self, server:Server, register_name:str, register_info:dict):
-        """ Read an individual register using pymodbus 
+        """ Read a group of registers using pymodbus 
         
             Reuires implementation of the abstract method 'Server._decoded()'
         """
@@ -53,7 +53,7 @@ class ModbusRtuClient:
         server._validate_write_val(register_name, val)
         
         self.client.write_register(address=register_info["addr"],
-                                    value=server._encoded(value, dtype),
+                                    value=server._encoded(value),
                                     slave=server.device_addr)
 
 
@@ -66,7 +66,7 @@ class ModbusRtuClient:
     def from_config(client_cfg: dict, connection_specs: dict):
         conection_cfg = connection_specs[client_cfg["connection_specs"]]
         
-        return ModbusRtuClient(client_cf["name"], client_cfg["nickname"], client_cfg["port"], 
+        return ModbusRtuClient(client_cfg["name"], client_cfg["nickname"], client_cfg["port"], 
                             connection_cfg["baudrate"], connection_cfg["bytesize"], 
                             connection_cfg["parity"], connection_cfg["stopbits"])
 

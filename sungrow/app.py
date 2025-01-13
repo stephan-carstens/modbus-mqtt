@@ -38,12 +38,16 @@ try:
     # Instantiate servers
     servers = [SungrowInverter.from_config(server_cfg, comm) for server_cfg in servers_cfgs]
 
+    # Connect to clients
+    for client in clients:
+        client.connect()
+
     # Connect to Servers
     for server in Servers:
         server.verify_serialnum()                              
             
-        # get server model
-        modelcode = server.connected_client.read_register(server, server.registers["Device Type Code"])
+        # server.read_model()
+        modelcode = server.connected_client.read_register(server, "Device Type Code", server.registers["Device Type Code"])
         sever.model = Server.device_info[modelcode]
         # TODO find valid registers
         # - get limits for settable params TODO
@@ -65,7 +69,7 @@ try:
                 value = client.read_register(server, register, details)
                 mqtt_client.publish(register, value)
 
-        #publish availability
+        # publish availability
 
         sleep(config.read_interval)
 finally:
