@@ -20,21 +20,21 @@ class ModbusRtuClient:
                                             timeout=timeout)
 
 
-    def read_register(self, server:Server, register_name:str, register_info:dict):
+    def read_registers(self, server:Server, register_name:str, register_info:dict):
         """ Read an individual register using pymodbus 
         
             Reuires implementation of the abstract method 'Server._decoded()'
         """
 
-        # register = register["name"]
         address = register_info["addr"]
         dtype =  register_info["dtype"]
         multiplier = register_info["multiplier"]
         unit = register_info["unit"]
+        count = register_info["count"]
 
         result = self.client.read_holding_registers(address-1,
+                                                    count=count,
                                                     slave=server.device_addr)
-        # result.registers
 
         if result.isError():
             raise Exception(f"Error reading register {register_name}")

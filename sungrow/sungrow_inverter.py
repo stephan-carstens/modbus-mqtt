@@ -1,4 +1,4 @@
-from .server import Server
+from server import Server
 from pymodbus.client import ModbusSerialClient
 import struct
 

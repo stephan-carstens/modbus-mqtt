@@ -1,11 +1,11 @@
-from .config_loader import ConfigLoader
+from config_loader import ConfigLoader
 import abc
 
 class Server(metaclass=abc.ABCMeta):
     def __init__(self, name:str, nickname:str, serialnum:str, device_addr:int, connected_client):
-        self.name = name
-        self.nickname= nickname
-        self.serialnum = serialnum
+        self.name: str = name
+        self.nickname: str = nickname
+        self.serialnum: str = serialnum
         self.connected_client = connected_client
         self.registers: list = []
         self.manufacturer:str | None = None
@@ -13,13 +13,20 @@ class Server(metaclass=abc.ABCMeta):
         self.device_addr:int| None = None
         # self.batches TODO
 
-    def verify_serialnum(self, serialnum_as_read:str):
+    def verify_serialnum(self, serialnum_name_in_definition:str="Serial Number"):
+        """ Verify that the serialnum specified in config.yaml matches 
+        with the num in the regsiter as defined in implementation of Server
+
+        Arguments:
+        ----------
+            - serialnum_name_in_definition: str: Name of the register in server.registers containing the serial number
+        """
+        serialnum = server.connected_client.read_registers(server, serialnum_name_in_definition, 
+                                                            server.registers[serialnum_name_in_definition])
+
         if self.serialnum is None: raise ConnectionError(f"Failed to read serialnum of {self.nickname}.")
         elif self.serialnum != serialnum_as_read: raise ValueError(f"Mismatch in configured serialnum {self.serialnum} \
                                                                         and actual serialnum {serialnum_as_read} for server {self.nickname}.")
-
-    def batchify_registers(self):
-        pass
 
     def from_config(server_cfg:dict, clients:list):
         # assume valid configLoader object

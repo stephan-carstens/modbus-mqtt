@@ -40,9 +40,8 @@ try:
 
     # Connect to Servers
     for server in Servers:
-        # - verify that all specified serial nums are connected
-        serialnum = server.connected_client.read_register(server, server.registers["Serial Number"])
-        server.verify_serialnum(serialnum)                                                        # what is the point of isCOnnected if an error is raised for all cases where it woulf be false as in UXR
+        server.verify_serialnum()                              
+            
         # get server model
         modelcode = server.connected_client.read_register(server, server.registers["Device Type Code"])
         sever.model = Server.device_info[modelcode]
