@@ -61,14 +61,17 @@ class Options:
     mwtt_ha_discovery_topic: str
     mqtt_base_topic: str
 
-def validate_unique_names(opts: Options):
+def validate_nicknames(opts: Options):
     """
     Verify unique names for clients and servers of options.
     """
     for cs in ('clients', 'servers'):
-        names = [c.name for c in getattr(opts, cs)]
+        names = [c.ha_display_name for c in getattr(opts, cs)]
         if len(set(names)) != len(names): 
             raise ValueError(f"{cs[:-1]} nicknames must be unique")
+        
+        if not all([c.isalnum() for c in names]):
+            raise ValueError(f"Client nicknames must be alphanumeric")
         
 def validate_server_implemented(opts: Options):
     for server in opts.servers:
@@ -92,7 +95,7 @@ def load_options(json_rel_path="/data/options.json") -> tuple[dict, dict]:
         raise FileNotFoundError(f"Config options json/yaml not found.")
 
     opts = converter.structure(data, Options)
-    validate_unique_names(opts)
+    validate_nicknames(opts)
     validate_server_implemented(opts)
     logger.info("Successfully read configuration")
 
