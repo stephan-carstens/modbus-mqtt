@@ -21,6 +21,10 @@ class DataType(enum.Enum):
     I16 = "I16"
     I32 = "I32"
     I64 = "I64"
+
+    # Floats
+    F32 = "F32"
+    F64 = "F64"
     
     # String
     UTF8 = "UTF8"
@@ -36,6 +40,8 @@ class DataType(enum.Enum):
             DataType.I16: 2,
             DataType.U32: 4,
             DataType.I32: 4,
+            DataType.F32: 4,
+            DataType.F32: 4,
             DataType.U64: 8,
             DataType.I64: 8,
             DataType.UTF8: None
