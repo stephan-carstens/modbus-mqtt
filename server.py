@@ -47,7 +47,7 @@ class Server(metaclass=abc.ABCMeta):
         response = self.connected_client._read(address, count, slave_id, register_type)
 
         if response.isError(): 
-            self.sonnected_client._handle_error_response(response, register_name)
+            self.sonnected_client._handle_error_response(response)
             available = False
 
         return available

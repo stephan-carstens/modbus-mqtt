@@ -60,7 +60,7 @@ class Client:
         result = self._read(address, count, slave_id, register_type)
 
         if result.isError(): 
-            self._handle_error_response(result, register_name)
+            self._handle_error_response(result)
             raise Exception(f"Error reading register {register_name}")
 
         
@@ -109,7 +109,7 @@ class Client:
     def __str__(self):
         return f"{self.nickname}"
 
-    def _handle_error_response(result, register_name):
+    def _handle_error_response(self, result):
         if isinstance(result, ExceptionResponse):
             exception_code = result.exception_code
 
