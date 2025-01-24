@@ -5,8 +5,11 @@ import logging
 from loader import Options
 
 from random import getrandbits
-from time import time
+from time import time, sleep
+from queue import Queue
+
 logger = logging.getLogger(__name__)
+RECV_Q = Queue()
 
 def slugify(text):
     return text.replace(' ', '_').replace('(', '').replace(')', '').replace('/', 'OR').replace('&', ' ').replace(':', '').replace('.', '').lower()
@@ -38,6 +41,8 @@ class MqttClient(mqtt.Client):
 
         def on_message(client, userdata, message):
             logger.info("Received message on MQTT")
+            sleep(0.01)
+            RECV_Q.put(message)                         # thread-safe
 
         self.on_connect = on_connect
         self.on_disconnect = on_disconnect
@@ -78,6 +83,19 @@ class MqttClient(mqtt.Client):
             self.publish(discovery_topic, json.dumps(discovery_payload), retain=True)
 
         self.publish_availability(True, server)
+
+        for register_name, details in server.write_parameters:
+            discovery_payload = {
+                "name": register_name,
+                "unique_id": f"{server.nickname}_{slugify(register_name)}",
+                "command_topic": f"{self.base_topic}/{server.nickname}/{slugify(register_name)}/set",
+                "unit_of_measurement": details["unit"],
+                "availability_topic": availability_topic,
+                "device": device
+            }
+
+            discovery_topic = f"{self.ha_discovery_topic}/number/{server.nickname}/{slugify(register_name)}/config"
+            self.publish(discovery_topic, json.dumps(discovery_payload), retain=True)
 
     def publish_to_ha(self, register_name, value, server):
         state_topic = f"{self.base_topic}/{server.nickname}/{slugify(register_name)}/state"

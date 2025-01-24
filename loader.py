@@ -84,14 +84,19 @@ def load_options(json_rel_path="/data/options.json") -> tuple[dict, dict]:
 
     logger.info("Attempting to read configuration json")
     if os.path.exists(json_rel_path):
-        with open(json_rel_path) as f:
-            data = json.load(f)
+        if json_rel_path[-4:] == 'json':
+            with open(json_rel_path) as f:
+                data = json.load(f)
+        elif json_rel_path[-4:] == 'yaml':
+            with open(json_rel_path) as file:
+                data = yaml.load(file, Loader=yaml.FullLoader)['options']
     elif os.path.exists('config.yaml'):
         logging.info("Loading config.yaml")
         with open('config.yaml') as file:
             data = yaml.load(file, Loader=yaml.FullLoader)['options']
     else:
         logger.info("ConfigLoader error")
+        logger.info(os.path.join(os.getcwd(), json_rel_path))
         raise FileNotFoundError(f"Config options json/yaml not found.")
 
     opts = converter.structure(data, Options)

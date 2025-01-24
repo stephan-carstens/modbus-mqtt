@@ -1,6 +1,7 @@
 import abc
 import logging
 from enums import DataType
+from dataclasses import dataclass
 # from loader import ServerOptions
 
 logger = logging.getLogger(__name__)
@@ -24,6 +25,9 @@ class Server(metaclass=abc.ABCMeta):
         self.model_info: dict | None = None                         # additional model-specific info e.g. 'mppt': 3
 
         logger.info(f"Server {self.nickname} set up.")
+
+    def __str__(self):
+        return f"{self.nickname}"
     
     def read_model(self, device_type_code_param_key="Device type code"):
         logger.info(f"Reading model for server")
